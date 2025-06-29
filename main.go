@@ -30,6 +30,10 @@ func getAllFiles(wl *worklist.Worklist, path string){
 }
 
 func main() {
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: go run main.go <search_term> <directory>")
+		return
+	}
 	var workerWg sync.WaitGroup
 	wl := worklist.New(100)
 	results := make(chan worker.Result, 100)
@@ -80,7 +84,7 @@ go func() {
 		for {
 			select {
 			case r := <-results :
-				fmt.Printf("%v[%v]:%v",r.Path,r.LineNum,r.Line)
+				fmt.Printf("%s:%d: %s \n",r.Path,r.LineNum,r.Line)
 
 			case <- blockWorkerWg:
 			// make sure channel is empty before aborting
